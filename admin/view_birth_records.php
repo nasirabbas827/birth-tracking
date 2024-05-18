@@ -1,0 +1,115 @@
+<?php
+session_start();
+include('config.php');
+
+// Check if the user is logged in as an admin
+if (!isset($_SESSION["usertype"]) || $_SESSION["usertype"] !== "admin") {
+    header("Location: admin_login.php");
+    exit;
+}
+
+// Initialize search parameter
+$search_term = isset($_POST['search_term']) ? $_POST['search_term'] : '';
+
+// Fetch birth records with joins for names
+$query = "SELECT br.*, u.username, d.DistrictName, t.TehsilName, uc.UnionCouncilName 
+          FROM birthrecords br
+          JOIN users u ON br.UserID = u.id
+          JOIN districts d ON br.DistrictID = d.DistrictId
+          JOIN tehsils t ON br.TehsilID = t.TehsilID
+          JOIN unioncouncils uc ON br.UnionCouncilID = uc.UnionCouncilID
+          WHERE d.DistrictName LIKE '%$search_term%'
+          OR t.TehsilName LIKE '%$search_term%'
+          OR uc.UnionCouncilName LIKE '%$search_term%'";
+
+$records = mysqli_query($conn, $query);
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Birth Records</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<?php include('admin_navbar.php'); ?>
+
+<div class="container mt-5">
+    <h2 class="text-center">Birth Records</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <form method="POST" action="">
+                <div class="form-group">
+                    <label for="search_term">Search</label>
+                    <input type="text" class="form-control" id="search_term" name="search_term" value="<?php echo $search_term; ?>" placeholder="Search by District, Tehsil, or Union Council">
+                </div>
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="recordsTable">
+                    <thead>
+                        <tr>
+                            <th>BirthRecordID</th>
+                            <th>ChildName</th>
+                            <th>FatherName</th>
+                            <th>MotherName</th>
+                            <th>BirthDate</th>
+                            <th>Gender</th>
+                            <th>MotherNIC</th>
+                            <th>FatherNIC</th>
+                            <th>PaymentMethod</th>
+                            <th>Username</th>
+                            <th>District</th>
+                            <th>Tehsil</th>
+                            <th>Union Council</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while($record = mysqli_fetch_assoc($records)): ?>
+                            <tr>
+                                <td><?php echo $record['BirthRecordID']; ?></td>
+                                <td><?php echo $record['ChildName']; ?></td>
+                                <td><?php echo $record['FatherName']; ?></td>
+                                <td><?php echo $record['MotherName']; ?></td>
+                                <td><?php echo $record['BirthDate']; ?></td>
+                                <td><?php echo $record['Gender']; ?></td>
+                                <td><?php echo $record['MotherNIC']; ?></td>
+                                <td><?php echo $record['FatherNIC']; ?></td>
+                                <td><?php echo $record['PaymentMethod']; ?></td>
+                                <td><?php echo $record['username']; ?></td>
+                                <td><?php echo $record['DistrictName']; ?></td>
+                                <td><?php echo $record['TehsilName']; ?></td>
+                                <td><?php echo $record['UnionCouncilName']; ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+            <button id="exportButton" class="btn btn-success float-right m-4">Export to Excel</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+<script>
+document.getElementById('exportButton').addEventListener('click', function() {
+    var table = document.getElementById('recordsTable');
+    var workbook = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+    XLSX.writeFile(workbook, 'birth_records.xlsx');
+});
+</script>
+</body>
+</html>
