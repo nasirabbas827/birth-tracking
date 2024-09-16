@@ -44,6 +44,8 @@ $result = mysqli_stmt_get_result($stmt);
                 <th>Mother NIC</th>
                 <th>Father NIC</th>
                 <th>Payment Method</th>
+                <th>Fee</th>
+                <th>Payment Status</th>
                 <th>District</th>
                 <th>Tehsil</th>
                 <th>Union Council</th>
@@ -62,23 +64,34 @@ $result = mysqli_stmt_get_result($stmt);
                 echo "<td>" . $row['MotherNIC'] . "</td>";
                 echo "<td>" . $row['FatherNIC'] . "</td>";
                 echo "<td>" . $row['PaymentMethod'] . "</td>";
+                echo "<td>" . $row['Fee'] . "</td>";
+                echo "<td>" . $row['PaymentStatus'] . "</td>";
+                
                 // Fetch district name
                 $district_query = "SELECT DistrictName FROM districts WHERE DistrictID = " . $row['DistrictID'];
                 $district_result = mysqli_query($conn, $district_query);
                 $district_row = mysqli_fetch_assoc($district_result);
                 echo "<td>" . $district_row['DistrictName'] . "</td>";
+                
                 // Fetch tehsil name
                 $tehsil_query = "SELECT TehsilName FROM tehsils WHERE TehsilID = " . $row['TehsilID'];
                 $tehsil_result = mysqli_query($conn, $tehsil_query);
                 $tehsil_row = mysqli_fetch_assoc($tehsil_result);
                 echo "<td>" . $tehsil_row['TehsilName'] . "</td>";
+                
                 // Fetch union council name
                 $union_query = "SELECT UnionCouncilName FROM unioncouncils WHERE UnionCouncilID = " . $row['UnionCouncilID'];
                 $union_result = mysqli_query($conn, $union_query);
                 $union_row = mysqli_fetch_assoc($union_result);
                 echo "<td>" . $union_row['UnionCouncilName'] . "</td>";
-                // Print button
-                echo '<td><a href="generate_pdf.php?birthRecordId=' . $row['BirthRecordID'] . '" class="btn btn-primary">Print</a></td>';
+                
+                // Conditional action button
+                if ($row['PaymentStatus'] == 'Unpaid') {
+                    echo '<td><a href="pay_now.php?birthRecordId=' . $row['BirthRecordID'] . '" class="btn btn-success">Pay Now</a></td>';
+                } else {
+                    echo '<td><a href="generate_pdf.php?birthRecordId=' . $row['BirthRecordID'] . '" class="btn btn-primary">Print</a></td>';
+                }
+                
                 echo "</tr>";
             }
             ?>

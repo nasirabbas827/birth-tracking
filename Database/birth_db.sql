@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 18, 2024 at 08:16 AM
+-- Generation Time: Sep 16, 2024 at 11:27 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -56,6 +56,8 @@ CREATE TABLE `birthrecords` (
   `MotherNIC` varchar(15) NOT NULL,
   `FatherNIC` varchar(15) NOT NULL,
   `PaymentMethod` varchar(100) NOT NULL,
+  `PaymentStatus` varchar(20) DEFAULT 'Unpaid',
+  `Fee` int(11) DEFAULT 500,
   `DistrictID` int(11) DEFAULT NULL,
   `TehsilID` int(11) DEFAULT NULL,
   `UnionCouncilID` int(11) DEFAULT NULL,
@@ -66,9 +68,10 @@ CREATE TABLE `birthrecords` (
 -- Dumping data for table `birthrecords`
 --
 
-INSERT INTO `birthrecords` (`BirthRecordID`, `ChildName`, `FatherName`, `MotherName`, `BirthDate`, `Gender`, `MotherNIC`, `FatherNIC`, `PaymentMethod`, `DistrictID`, `TehsilID`, `UnionCouncilID`, `UserID`) VALUES
-(2, 'Haider', 'Khadim Hussain', 'Ayesha', '2024-05-17', 'Male', '32402-8443661-2', '32402-8443661-3', 'Online', 1, 1, 2, 3),
-(3, 'Haider', 'Khadim Hussain', 'Ayesha', '2024-05-17', 'Male', '32402-8443661-2', '32402-8443661-3', 'Online', 1, 1, 2, 3);
+INSERT INTO `birthrecords` (`BirthRecordID`, `ChildName`, `FatherName`, `MotherName`, `BirthDate`, `Gender`, `MotherNIC`, `FatherNIC`, `PaymentMethod`, `PaymentStatus`, `Fee`, `DistrictID`, `TehsilID`, `UnionCouncilID`, `UserID`) VALUES
+(2, 'Haider', 'Khadim Hussain', 'Ayesha', '2024-05-17', 'Male', '32402-8443661-2', '32402-8443661-3', 'Online', 'Paid', 500, 1, 1, 2, 3),
+(3, 'Haider', 'Khadim Hussain', 'Ayesha', '2024-05-17', 'Male', '32402-8443661-2', '32402-8443661-3', 'Online', 'Paid', 500, 1, 1, 2, 3),
+(5, 'dfa', 'Asad', 'Ayesha', '2024-09-16', 'Male', '32402-8443661-4', '32402-8433661-6', 'Online', 'Unpaid', 500, 1, 1, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -87,15 +90,18 @@ CREATE TABLE `deathrecords` (
   `DistrictID` int(11) NOT NULL,
   `TehsilID` int(11) NOT NULL,
   `UnionCouncilID` int(11) NOT NULL,
-  `UserID` int(11) NOT NULL
+  `UserID` int(11) NOT NULL,
+  `PaymentStatus` varchar(10) NOT NULL DEFAULT 'Unpaid',
+  `Fee` decimal(10,2) NOT NULL DEFAULT 500.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `deathrecords`
 --
 
-INSERT INTO `deathrecords` (`DeathRecordID`, `DeceasedName`, `FatherName`, `FatherNIC`, `DeathDate`, `CauseOfDeath`, `NICNumber`, `DistrictID`, `TehsilID`, `UnionCouncilID`, `UserID`) VALUES
-(1, 'None', 'haider', '32402-8443661-3', '2024-05-18', 'None', '32402-8443661-3', 1, 1, 2, 3);
+INSERT INTO `deathrecords` (`DeathRecordID`, `DeceasedName`, `FatherName`, `FatherNIC`, `DeathDate`, `CauseOfDeath`, `NICNumber`, `DistrictID`, `TehsilID`, `UnionCouncilID`, `UserID`, `PaymentStatus`, `Fee`) VALUES
+(1, 'None', 'haider', '32402-8443661-3', '2024-05-18', 'None', '32402-8443661-3', 1, 1, 2, 3, 'Paid', 500.00),
+(2, 'None', 'haider', '32402-8443661-3', '2024-09-16', 'dsa', '32402-8443661-9', 1, 1, 2, 3, 'Unpaid', 500.00);
 
 -- --------------------------------------------------------
 
@@ -246,13 +252,13 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `birthrecords`
 --
 ALTER TABLE `birthrecords`
-  MODIFY `BirthRecordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `BirthRecordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `deathrecords`
 --
 ALTER TABLE `deathrecords`
-  MODIFY `DeathRecordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `DeathRecordID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `districts`

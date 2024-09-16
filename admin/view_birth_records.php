@@ -22,6 +22,7 @@ $query = "SELECT br.*, u.username, d.DistrictName, t.TehsilName, uc.UnionCouncil
           OR t.TehsilName LIKE '%$search_term%'
           OR uc.UnionCouncilName LIKE '%$search_term%'";
 
+
 $records = mysqli_query($conn, $query);
 ?>
 
@@ -46,7 +47,7 @@ $records = mysqli_query($conn, $query);
             <form method="POST" action="">
                 <div class="form-group">
                     <label for="search_term">Search</label>
-                    <input type="text" class="form-control" id="search_term" name="search_term" value="<?php echo $search_term; ?>" placeholder="Search by District, Tehsil, or Union Council">
+                    <input type="text" class="form-control" id="search_term" name="search_term" value="<?php echo htmlspecialchars($search_term); ?>" placeholder="Search by District, Tehsil, or Union Council">
                 </div>
                 <button type="submit" class="btn btn-primary">Generate Report</button>
             </form>
@@ -68,6 +69,8 @@ $records = mysqli_query($conn, $query);
                             <th>MotherNIC</th>
                             <th>FatherNIC</th>
                             <th>PaymentMethod</th>
+                            <th>PaymentStatus</th> <!-- Added column for Payment Status -->
+                            <th>Fee</th> <!-- Added column for Fee -->
                             <th>Username</th>
                             <th>District</th>
                             <th>Tehsil</th>
@@ -77,19 +80,21 @@ $records = mysqli_query($conn, $query);
                     <tbody>
                         <?php while($record = mysqli_fetch_assoc($records)): ?>
                             <tr>
-                                <td><?php echo $record['BirthRecordID']; ?></td>
-                                <td><?php echo $record['ChildName']; ?></td>
-                                <td><?php echo $record['FatherName']; ?></td>
-                                <td><?php echo $record['MotherName']; ?></td>
-                                <td><?php echo $record['BirthDate']; ?></td>
-                                <td><?php echo $record['Gender']; ?></td>
-                                <td><?php echo $record['MotherNIC']; ?></td>
-                                <td><?php echo $record['FatherNIC']; ?></td>
-                                <td><?php echo $record['PaymentMethod']; ?></td>
-                                <td><?php echo $record['username']; ?></td>
-                                <td><?php echo $record['DistrictName']; ?></td>
-                                <td><?php echo $record['TehsilName']; ?></td>
-                                <td><?php echo $record['UnionCouncilName']; ?></td>
+                                <td><?php echo htmlspecialchars($record['BirthRecordID']); ?></td>
+                                <td><?php echo htmlspecialchars($record['ChildName']); ?></td>
+                                <td><?php echo htmlspecialchars($record['FatherName']); ?></td>
+                                <td><?php echo htmlspecialchars($record['MotherName']); ?></td>
+                                <td><?php echo htmlspecialchars($record['BirthDate']); ?></td>
+                                <td><?php echo htmlspecialchars($record['Gender']); ?></td>
+                                <td><?php echo htmlspecialchars($record['MotherNIC']); ?></td>
+                                <td><?php echo htmlspecialchars($record['FatherNIC']); ?></td>
+                                <td><?php echo htmlspecialchars($record['PaymentMethod']); ?></td>
+                                <td><?php echo htmlspecialchars($record['PaymentStatus']); ?></td> <!-- Display Payment Status -->
+                                <td><?php echo '$' . number_format($record['Fee'], 2); ?></td> <!-- Display Fee -->
+                                <td><?php echo htmlspecialchars($record['username']); ?></td>
+                                <td><?php echo htmlspecialchars($record['DistrictName']); ?></td>
+                                <td><?php echo htmlspecialchars($record['TehsilName']); ?></td>
+                                <td><?php echo htmlspecialchars($record['UnionCouncilName']); ?></td>
                             </tr>
                         <?php endwhile; ?>
                     </tbody>

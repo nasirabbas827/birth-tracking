@@ -45,6 +45,8 @@ $result = mysqli_stmt_get_result($stmt);
                 <th>District</th>
                 <th>Tehsil</th>
                 <th>Union Council</th>
+                <th>Fee</th>
+                <th>Payment Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -76,7 +78,13 @@ $result = mysqli_stmt_get_result($stmt);
                 echo "<td>" . $district_row['DistrictName'] . "</td>";
                 echo "<td>" . $tehsil_row['TehsilName'] . "</td>";
                 echo "<td>" . $union_row['UnionCouncilName'] . "</td>";
-                echo "<td><a href='print_death_record.php?id=" . $row['DeathRecordID'] . "' class='btn btn-primary'>Print</a></td>";
+                echo "<td>$" . number_format($row['Fee'], 2) . "</td>";
+                echo "<td>" . htmlspecialchars($row['PaymentStatus']) . "</td>";
+                if ($row['PaymentStatus'] === 'Unpaid') {
+                    echo "<td><a href='death_paynow.php?id=" . $row['DeathRecordID'] . "' class='btn btn-success'>Pay Now</a></td>";
+                } else {
+                    echo "<td><a href='print_death_record.php?id=" . $row['DeathRecordID'] . "' class='btn btn-primary'>Print</a></td>";
+                }
                 echo "</tr>";
             }
             ?>

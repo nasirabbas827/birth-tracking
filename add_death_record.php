@@ -86,7 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check input errors before inserting in database
     if (empty($deceased_name_err) && empty($father_name_err) && empty($father_nic_err) && empty($death_date_err) && empty($cause_of_death_err) && empty($nic_number_err) && empty($district_id_err) && empty($tehsil_id_err) && empty($union_council_id_err)) {
         // Prepare an insert statement
-        $sql = "INSERT INTO DeathRecords (DeceasedName, FatherName, FatherNIC, DeathDate, CauseOfDeath, NICNumber, DistrictID, TehsilID, UnionCouncilID, UserID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO DeathRecords (DeceasedName, FatherName, FatherNIC, DeathDate, CauseOfDeath, NICNumber, DistrictID, TehsilID, UnionCouncilID, UserID, PaymentStatus, Fee) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Unpaid', 500)";
 
         if ($stmt = mysqli_prepare($conn, $sql)) {
             // Bind variables to the prepared statement as parameters
@@ -216,6 +217,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ?>
                 </select>
                 <span class="invalid-feedback"><?php echo $union_council_id_err; ?></span>
+            </div>
+            <div class="form-group">
+                <label>Fee</label>
+                <input type="text" class="form-control" value="500" readonly>
             </div>
         </div>
     </div>
