@@ -1,5 +1,13 @@
 <?php
+session_start();
 include('config.php');
+
+// Check if the user is logged in as an admin
+if (!isset($_SESSION["usertype"]) || $_SESSION["usertype"] !== "admin") {
+    header("Location: admin_login.php");
+    exit;
+}
+
 
 // define variables and initialize with empty values
 $username = $password = $email = $phone = $age = $cnic = "";
@@ -101,7 +109,6 @@ if (empty(trim($_POST["cnic"]))) {
 }
 
 
-
     // if no errors, insert user into database
     if (empty($username_err) && empty($password_err) && empty($email_err) && empty($phone_err) && empty($age_err) && empty($cnic_err)) {
         $sql = "INSERT INTO users (username, password, email, phone, age, cnic) VALUES (?, ?, ?, ?, ?, ?)";
@@ -127,13 +134,12 @@ if (empty(trim($_POST["cnic"]))) {
     <title>User Registration</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-<?php include('navbar.php'); ?>
+<?php include('admin_navbar.php'); ?>
     <div class="container mt-5">
-        <h2 class="text-center">User Registration</h2>
-        <p class="text-center">Please fill in your details to register.</p>
+        <h2 class="text-center">Add User </h2>
 
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
@@ -167,11 +173,10 @@ if (empty(trim($_POST["cnic"]))) {
                 <span class="invalid-feedback"><?php echo $cnic_err; ?></span>
             </div>
             <div class="form-group text-center">
-                <input type="submit" class="btn btn-primary" value="Register">
+                <input type="submit" class="btn btn-primary" value="Add User">
+                <a href="view_users.php" class="btn btn-outline-dark" >View Users</a>
             </div>
         </form>
-
-        <p class="text-center">Already have an account? <a href="login.php">Login here</a></p>
     </div>
 
     <!-- Bootstrap JS -->
